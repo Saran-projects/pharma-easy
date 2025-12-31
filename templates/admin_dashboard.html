@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+
+  <!-- Vue CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+    }
+
+    /* Layout */
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 30px;
+    }
+
+    .header {
+      background: white;
+      padding: 20px 30px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      margin-bottom: 30px;
+    }
+
+    .header h2 {
+      margin: 0;
+      color: #667eea;
+    }
+
+    .logout {
+      background: #ff4757;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .logout:hover {
+      background: #e84118;
+    }
+
+    /* Cards */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 25px;
+    }
+
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 14px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+    }
+
+    .icon {
+      font-size: 40px;
+      margin-bottom: 15px;
+    }
+
+    .title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 6px;
+    }
+
+    .desc {
+      font-size: 14px;
+      color: #777;
+    }
+  </style>
+</head>
+
+<body>
+<div id="app">
+  <div class="container">
+
+    <!-- Header -->
+    <div class="header">
+      <h2>🏥 Admin Dashboard</h2>
+      <button class="logout" @click="logout">Logout</button>
+    </div>
+
+    <!-- Dashboard Cards -->
+    <div class="grid">
+      <div class="card" @click="go('supplier')">
+        <div class="icon">🚚</div>
+        <div class="title">Add Supplier</div>
+        <div class="desc">Manage supplier details</div>
+      </div>
+
+      <div class="card" @click="go('medicine')">
+        <div class="icon">💊</div>
+        <div class="title">Add Medicine</div>
+        <div class="desc">Add & update medicines</div>
+      </div>
+
+      <div class="card" @click="go('staff')">
+        <div class="icon">👤</div>
+        <div class="title">Add Staff</div>
+        <div class="desc">Create staff accounts</div>
+      </div>
+
+      <div class="card" @click="go('analytics')">
+        <div class="icon">📊</div>
+        <div class="title">Analytics</div>
+        <div class="desc">View sales & reports</div>
+      </div>
+
+      <div class="card" @click="go('billing_history')">
+        <div class="icon">📊</div>
+        <div class="title">Billing History</div>
+        <div class="desc">View Billing History</div>
+      </div>
+      <div class="card" @click="go('manage_staff')">
+        <div class="icon">👥</div>
+        <div class="title">Manage Staff</div>
+        <div class="desc">View & Edit Staff</div>
+      </div>
+      <div class="card" @click="go('view_medicines')">
+        <div class="icon">💊</div>
+        <div class="title">View Medicines</div>
+        <div class="desc">view available medicines</div>
+      </div>
+
+
+    </div>
+
+  </div>
+</div>
+
+<script>
+const { createApp } = Vue;
+
+createApp({
+  methods: {
+   
+    go(page) {
+        if (page === 'supplier') {
+        window.location.href = '/add_supplier_vue';
+          }
+        if (page === 'medicine') {
+        window.location.href = '/add_medicine_vue';
+        }
+        if (page === 'staff') {
+        window.location.href = '/add_staff_vue';
+        }
+        if (page === 'analytics') {
+        window.location.href = '/analytics_vue';
+        }
+        if (page === 'billing_history') {
+        window.location.href = '/billing_history_vue';
+        }
+        if (page === 'manage_staff') {
+        window.location.href = '/manage_staff_vue';
+        }
+        if (page === 'view_medicines') {
+        window.location.href = '/view_medicines_vue';
+        }
+
+
+
+    
+
+        else
+        {alert(page + " page will be implemented next");}
+    },
+    async logout() {
+      await fetch('/', { method: 'POST' });
+      window.location.href = '/';
+    }
+  }
+}).mount('#app');
+</script>
+
+</body>
+</html>

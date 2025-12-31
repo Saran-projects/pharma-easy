@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>View Medicines</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      padding: 30px;
+    }
+
+    .card {
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 14px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    }
+
+    h2 {
+      text-align: center;
+      color: #667eea;
+      margin-bottom: 25px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+    }
+
+    th {
+      background: #667eea;
+      color: white;
+      padding: 14px;
+      text-align: left;
+    }
+
+    td {
+      padding: 14px;
+      border-bottom: 1px solid #eee;
+    }
+
+    tr:hover {
+      background: #f5f7ff;
+    }
+
+    .back {
+      margin-top: 25px;
+      width: 100%;
+      padding: 12px;
+      background: #444;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+<div id="app">
+  <div class="card">
+    <h2>💊 Medicines Inventory</h2>
+
+    <table>
+      <tr>
+        <th>Name</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Supplier</th>
+      </tr>
+      <tr v-for="m in medicines" :key="m.name">
+        <td>{{ m.name }}</td>
+        <td>{{ m.quantity }}</td>
+        <td>₹{{ m.price }}</td>
+        <td>{{ m.supplier }}</td>
+      </tr>
+    </table>
+
+    <button class="back" @click="back">Back to Dashboard</button>
+  </div>
+</div>
+
+<script>
+Vue.createApp({
+  data() {
+    return { medicines: [] }
+  },
+  async mounted() {
+    const res = await fetch('/api/medicines_admin');
+    this.medicines = await res.json();
+  },
+  methods: {
+    back() {
+      window.location.href = '/admin_dashboard';
+    }
+  }
+}).mount('#app');
+</script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Medicine</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card {
+      background: white;
+      width: 450px;
+      padding: 35px;
+      border-radius: 14px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    }
+
+    h2 {
+      text-align: center;
+      color: #667eea;
+      margin-bottom: 25px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 8px;
+      background: #667eea;
+      color: white;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .back {
+      background: #444;
+    }
+
+    .message {
+      text-align: center;
+      margin-top: 12px;
+      color: green;
+    }
+  </style>
+</head>
+
+<body>
+<div id="app">
+  <div class="card">
+    <h2>💊 Add Medicine</h2>
+
+    <input v-model="medicine.name" placeholder="Medicine Name">
+    <input v-model="medicine.batch" placeholder="Batch Number">
+    <input v-model="medicine.expiry" type="date">
+    <input v-model="medicine.quantity" type="number" placeholder="Quantity">
+    <input v-model="medicine.price" type="number" placeholder="Price">
+
+    <select v-model="medicine.supplier_id">
+      <option value="">Select Supplier</option>
+      <option v-for="s in suppliers" :value="s.id">
+        {{ s.name }}
+      </option>
+    </select>
+
+    <button @click="saveMedicine">Save Medicine</button>
+    <button class="back" @click="goBack">Back to Dashboard</button>
+
+    <div class="message">{{ message }}</div>
+  </div>
+</div>
+
+<script>
+const { createApp } = Vue;
+
+createApp({
+  data() {
+    return {
+      suppliers: [],
+      message: '',
+      medicine: {
+        name: '',
+        batch: '',
+        expiry: '',
+        quantity: '',
+        price: '',
+        supplier_id: ''
+      }
+    }
+  },
+
+  methods: {
+    async loadSuppliers() {
+      const res = await fetch('/api/suppliers');
+      this.suppliers = await res.json();
+    },
+
+    async saveMedicine() {
+      const res = await fetch('/add_medicine', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(this.medicine)
+      });
+
+      if (res.ok) {
+        this.message = 'Medicine added successfully!';
+        this.medicine = {
+          name: '', batch: '', expiry: '',
+          quantity: '', price: '', supplier_id: ''
+        };
+      } else {
+        this.message = 'Failed to add medicine';
+      }
+    },
+
+    goBack() {
+      window.location.href = '/admin_dashboard';
+    }
+  },
+
+  mounted() {
+    this.loadSuppliers();
+  }
+}).mount('#app');
+</script>
+
+</body>
+</html>

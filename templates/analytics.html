@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Analytics</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      padding: 30px;
+    }
+
+    h2 {
+      color: white;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 14px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+      text-align: center;
+    }
+
+    img {
+      width: 100%;
+      border-radius: 10px;
+    }
+
+    button {
+      margin-top: 30px;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 8px;
+      background: #ff4757;
+      color: white;
+      cursor: pointer;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
+</head>
+
+<body>
+<div id="app">
+  <h2>📊 Sales Analytics</h2>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Sales Distribution</h3>
+      <img :src="'data:image/png;base64,' + hist">
+    </div>
+
+    <div class="card">
+      <h3>Monthly Sales</h3>
+      <img :src="'data:image/png;base64,' + sales">
+    </div>
+
+    <div class="card">
+      <h3>Supply Expense</h3>
+      <img :src="'data:image/png;base64,' + expense">
+    </div>
+  </div>
+
+  <button @click="goBack">Back to Dashboard</button>
+</div>
+
+<script>
+const { createApp } = Vue;
+
+createApp({
+  data() {
+    return {
+      hist: '',
+      sales: '',
+      expense: ''
+    }
+  },
+  async mounted() {
+    this.hist = await fetch('/analytics/sales_histogram').then(r => r.text());
+    this.sales = await fetch('/analytics/monthly_sales').then(r => r.text());
+    this.expense = await fetch('/analytics/supply_expense').then(r => r.text());
+  },
+  methods: {
+    goBack() {
+      window.location.href = '/admin_dashboard';
+    }
+  }
+}).mount('#app');
+</script>
+</body>
+</html>

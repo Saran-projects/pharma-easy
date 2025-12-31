@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Staff Billing</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card {
+      background: white;
+      width: 420px;
+      padding: 35px;
+      border-radius: 14px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    }
+
+    h2 {
+      text-align: center;
+      color: #667eea;
+      margin-bottom: 25px;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 8px;
+      background: #26de81;
+      color: white;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .logout {
+      background: #ff4757;
+    }
+
+    .message {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 15px;
+      color: green;
+    }
+  </style>
+</head>
+
+<body>
+<div id="app">
+  <div class="card">
+    <h2>💳 Generate Bill</h2>
+
+    <select v-model="medicine_id">
+      <option value="">Select Medicine</option>
+      <option v-for="m in medicines" :value="m.id">
+        {{ m.name }} (₹{{ m.price }} | Stock: {{ m.quantity }})
+      </option>
+    </select>
+
+    <input type="number" v-model="quantity" placeholder="Quantity">
+
+    <button @click="generateBill">Generate Bill</button>
+    <button class="logout" @click="logout">Logout</button>
+
+    <div class="message">{{ message }}</div>
+  </div>
+</div>
+
+<script>
+const { createApp } = Vue;
+
+createApp({
+  data() {
+    return {
+      medicines: [],
+      medicine_id: '',
+      quantity: '',
+      message: ''
+    }
+  },
+
+  methods: {
+    async loadMedicines() {
+      const res = await fetch('/api/medicines');
+      this.medicines = await res.json();
+    },
+
+    async generateBill() {
+      const res = await fetch('/generate_bill', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          medicine_id: this.medicine_id,
+          quantity: this.quantity
+        })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        this.message = 'Bill generated! Total ₹' + data.total;
+        this.quantity = '';
+        this.loadMedicines();
+      } else {
+        this.message = 'Billing failed';
+      }
+    },
+
+    async logout() {
+      await fetch('/', { method: 'POST' });
+      window.location.href = '/';
+    }
+  },
+
+  mounted() {
+    this.loadMedicines();
+  }
+}).mount('#app');
+</script>
+
+</body>
+</html>

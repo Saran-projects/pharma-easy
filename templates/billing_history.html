@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Billing History</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+<div id="app">
+  <h2>📜 Billing History</h2>
+
+  <table border="1" cellpadding="8">
+    <tr>
+      <th>Bill ID</th>
+      <th>Date</th>
+      <th>Total</th>
+      <th>Staff</th>
+    </tr>
+    <tr v-for="b in bills">
+      <td>{{ b.id }}</td>
+      <td>{{ b.date }}</td>
+      <td>₹{{ b.total }}</td>
+      <td>{{ b.staff }}</td>
+    </tr>
+  </table>
+
+  <br>
+  <button @click="back">Back</button>
+</div>
+
+<script>
+Vue.createApp({
+  data() {
+    return { bills: [] }
+  },
+  async mounted() {
+    const res = await fetch('/api/billing_history');
+    this.bills = await res.json();
+  },
+  methods: {
+    back() {
+      window.location.href = '/admin_dashboard';
+    }
+  }
+}).mount('#app');
+</script>
+</body>
+</html>

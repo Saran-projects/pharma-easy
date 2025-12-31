@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Staff</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card {
+      background: white;
+      width: 400px;
+      padding: 35px;
+      border-radius: 14px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    }
+
+    h2 {
+      text-align: center;
+      color: #667eea;
+      margin-bottom: 25px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 8px;
+      background: #667eea;
+      color: white;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .back {
+      background: #444;
+    }
+
+    .message {
+      text-align: center;
+      margin-top: 12px;
+      color: green;
+    }
+  </style>
+</head>
+
+<body>
+<div id="app">
+  <div class="card">
+    <h2>👤 Add Staff</h2>
+
+    <input v-model="username" placeholder="Username">
+    <input v-model="password" type="password" placeholder="Password">
+
+    <button @click="saveStaff">Create Staff</button>
+    <button class="back" @click="goBack">Back to Dashboard</button>
+
+    <div class="message">{{ message }}</div>
+  </div>
+</div>
+
+<script>
+const { createApp } = Vue;
+
+createApp({
+  data() {
+    return {
+      username: '',
+      password: '',
+      message: ''
+    }
+  },
+  methods: {
+    async saveStaff() {
+      const res = await fetch('/add_staff', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: this.username,
+          password: this.password
+        })
+      });
+
+      if (res.ok) {
+        this.message = 'Staff added successfully!';
+        this.username = '';
+        this.password = '';
+      } else {
+        this.message = 'Failed to add staff';
+      }
+    },
+
+    goBack() {
+      window.location.href = '/admin_dashboard';
+    }
+  }
+}).mount('#app');
+</script>
+
+</body>
+</html>

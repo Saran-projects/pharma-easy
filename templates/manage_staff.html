@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Staff</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card {
+      background: white;
+      width: 420px;
+      padding: 30px;
+      border-radius: 14px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    }
+
+    h2 {
+      text-align: center;
+      color: #667eea;
+      margin-bottom: 25px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 15px;
+      margin-bottom: 10px;
+      background: #f5f7ff;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+
+    button {
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .delete {
+      background: #ff4757;
+      color: white;
+    }
+
+    .delete:hover {
+      background: #e84118;
+    }
+
+    .back {
+      width: 100%;
+      margin-top: 20px;
+      padding: 12px;
+      background: #444;
+      color: white;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+<div id="app">
+  <div class="card">
+    <h2>👥 Manage Staff</h2>
+
+    <ul>
+      <li v-for="s in staff" :key="s.id">
+        {{ s.username }}
+        <button class="delete" @click="remove(s.id)">Delete</button>
+      </li>
+    </ul>
+
+    <button class="back" @click="back">Back to Dashboard</button>
+  </div>
+</div>
+
+<script>
+Vue.createApp({
+  data() {
+    return { staff: [] }
+  },
+  async mounted() {
+    const res = await fetch('/api/staff');
+    this.staff = await res.json();
+  },
+  methods: {
+    async remove(id) {
+      await fetch(`/api/delete_staff/${id}`, { method: 'DELETE' });
+      this.staff = this.staff.filter(s => s.id !== id);
+    },
+    back() {
+      window.location.href = '/admin_dashboard';
+    }
+  }
+}).mount('#app');
+</script>
+</body>
+</html>
